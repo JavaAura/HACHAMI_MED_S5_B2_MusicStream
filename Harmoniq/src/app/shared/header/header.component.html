@@ -1,5 +1,6 @@
-<div class="navbar bg-base-100" >
-  <div class="navbar-start">
+<!--  -->
+<div class="flex items-center justify-between h-16 bg-base-100 border-b border-gray-200">
+  <div class="navbar-start w-1/4 ">
     <div class="dropdown">
       <div tabindex="0" role="button" class="btn btn-ghost btn-circle">
         <svg
@@ -18,20 +19,24 @@
       <ul
         tabindex="0"
         class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
-        <li><a>Homepage</a></li>
-        <li><a>Portfolio</a></li>
+        <li><a onclick="new_track_modal.showModal()">New Track</a></li>
+        <li><a>My Playlists</a></li>
         <li><a>About</a></li>
       </ul>
     </div>
   </div>
 
-  <!-- Center logo with absolute positioning -->
-  <div class="absolute left-1/2 transform -translate-x-1/2">
-    <img src="assets/images/logo.png" alt="Harmoniq Logo" class="h-16">
+  <!-- Updated center logo positioning -->
+  <div class="flex-1 flex justify-center" style="width: 100px;">
+    <img
+      src="./assets/images/logo.png"
+      alt="Harmoniq Logo"
+      class="h-12 w-auto object-contain"
+    >
   </div>
 
-  <!-- Move end items to top-right -->
-  <div class="navbar-end absolute top-0 right-0 p-2">
+  <!-- Updated end items positioning -->
+  <div class="navbar-end flex items-center gap-2 w-1/3" >
     <!-- Search button -->
     <button class="btn btn-ghost btn-circle">
       <svg
@@ -65,5 +70,23 @@
         <span class="badge badge-xs badge-primary indicator-item"></span>
       </div>
     </button>
+    <!-- Theme toggle button -->
+    <button onclick="ThemeManager.toggleTheme()" class="btn btn-ghost btn-circle">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+      </svg>
+    </button>
   </div>
 </div>
+
+
+<app-new-track-modal></app-new-track-modal>
