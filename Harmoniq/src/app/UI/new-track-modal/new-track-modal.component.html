@@ -2,39 +2,78 @@
   <section class="max-w-4xl p-6 mx-auto bg-base-100 rounded-md shadow-md">
     <h1 class="text-xl font-bold capitalize text-primary">New Track</h1>
 
-    <form (ngSubmit)="onSubmit()">
+    <form [formGroup]="trackForm" (ngSubmit)="onSubmit()">
       <div class="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2">
         <!-- Track Name -->
         <div>
-          <label class="label text-primary dark:text-blue-400" for="trackName">Track Name</label>
-          <input type="text" id="trackName"
-                 class="input input-bordered w-full border-primary focus:border-secondary"
-                 [(ngModel)]="newTrack.name" name="trackName" required>
+          <label class="label text-primary dark:text-blue-400" for="trackName"
+            >Track Name</label
+          >
+          <input
+            type="text"
+            id="trackName"
+            class="input input-bordered w-full border-primary focus:border-secondary"
+            formControlName="name"
+          />
+          <div
+            *ngIf="
+              trackForm.get('name')?.invalid && trackForm.get('name')?.touched
+            "
+            class="text-error text-sm mt-1"
+          >
+            <span *ngIf="trackForm.get('name')?.errors?.['required']"
+              >Track name is required</span
+            >
+          </div>
         </div>
 
         <!-- Artist Name -->
         <div>
-          <label class="label text-primary dark:text-blue-400" for="artistName">Artist Name</label>
-          <input type="text" id="artistName"
-                 class="input input-bordered w-full border-primary focus:border-secondary"
-                 [(ngModel)]="newTrack.artist" name="artistName" required>
+          <label class="label text-primary dark:text-blue-400" for="artistName"
+            >Artist Name</label
+          >
+          <input
+            type="text"
+            id="artistName"
+            class="input input-bordered w-full border-primary focus:border-secondary"
+            formControlName="artist"
+          />
+          <div
+            *ngIf="
+              trackForm.get('artist')?.invalid &&
+              trackForm.get('artist')?.touched
+            "
+            class="text-error text-sm mt-1"
+          >
+            <span *ngIf="trackForm.get('artist')?.errors?.['required']"
+              >Artist name is required</span
+            >
+          </div>
         </div>
 
         <!-- Description -->
         <div class="sm:col-span-2">
-          <label class="label text-primary dark:text-blue-400" for="description">Description (optional, max 200 characters)</label>
-          <textarea id="description"
-                    class="textarea textarea-bordered w-full border-primary focus:border-secondary"
-                    [(ngModel)]="newTrack.description" name="description"
-                    maxlength="200"></textarea>
+          <label class="label text-primary dark:text-blue-400" for="description"
+            >Description (optional, max 200 characters)</label
+          >
+          <textarea
+            id="description"
+            class="textarea textarea-bordered w-full border-primary focus:border-secondary"
+            formControlName="description"
+            maxlength="200"
+          ></textarea>
         </div>
 
         <!-- Music Category -->
         <div class="sm:col-span-2">
-          <label class="label text-primary dark:text-blue-400" for="category">Category</label>
-          <select id="category"
-                  class="select select-bordered w-full border-primary focus:border-secondary"
-                  [(ngModel)]="newTrack.category" name="category" required>
+          <label class="label text-primary dark:text-blue-400" for="category"
+            >Category</label
+          >
+          <select
+            id="category"
+            class="select select-bordered w-full border-primary focus:border-secondary"
+            formControlName="category"
+          >
             <option value="" disabled>Select a category</option>
             <option value="pop">Pop</option>
             <option value="rock">Rock</option>
@@ -42,41 +81,181 @@
             <option value="cha3bi">Cha3bi</option>
             <option value="other">Other</option>
           </select>
+          <div
+            *ngIf="
+              trackForm.get('category')?.invalid &&
+              trackForm.get('category')?.touched
+            "
+            class="text-error text-sm mt-1"
+          >
+            <span *ngIf="trackForm.get('category')?.errors?.['required']"
+              >Category is required</span
+            >
+          </div>
         </div>
 
         <!-- Audio File Upload -->
         <div class="sm:col-span-2">
-          <label class="label text-primary dark:text-blue-400">Audio File</label>
-          <div class="mt-1 flex justify-center px-4 py-3 border-2 border-dashed rounded-md border-primary">
+          <label class="label text-primary dark:text-blue-400"
+            >Audio File</label
+          >
+          <div
+            class="mt-1 flex justify-center px-4 py-3 border-2 border-dashed rounded-md"
+            [ngClass]="{
+              'border-error':
+                trackForm.get('audioFile')?.invalid &&
+                trackForm.get('audioFile')?.touched,
+              'border-primary':
+                !trackForm.get('audioFile')?.invalid ||
+                !trackForm.get('audioFile')?.touched
+            }"
+          >
             <div class="flex items-center gap-4">
-              <svg class="h-8 w-8 text-primary" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              <svg
+                class="h-8 w-8 text-primary"
+                stroke="currentColor"
+                fill="none"
+                viewBox="0 0 48 48"
+                aria-hidden="true"
+              >
+                <path
+                  d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
               </svg>
               <div>
-                <label class="btn btn-outline btn-sm text-primary hover:bg-primary hover:text-white border-primary">
+                <label
+                  class="btn btn-outline btn-sm text-primary hover:bg-primary hover:text-white border-primary"
+                >
                   <span>Upload a file</span>
-                  <input type="file" class="sr-only" (change)="onFileSelected($event)" accept="audio/*" required>
+                  <input
+                    type="file"
+                    class="sr-only"
+                    (change)="onFileSelected($event)"
+                    accept="audio/mp3,audio/wav,audio/ogg,audio/mpeg"
+                    [attr.required]="true"
+                  />
                 </label>
-                <p class="text-xs text-primary mt-1">Audio files only</p>
+                <p class="text-xs text-primary mt-1">
+                  MP3, WAV, OGG files only (max 15MB)
+                </p>
+                <div
+                  *ngIf="trackForm.get('audioFile')?.touched"
+                  class="text-error text-sm mt-1"
+                >
+                  <span
+                    *ngIf="
+                      !audioFileValidated && !trackForm.get('audioFile')?.value
+                    "
+                    >Audio file is required</span
+                  >
+                  <span
+                    *ngIf="trackForm.get('audioFile')?.errors?.['invalidFormat']"
+                    >Invalid file format. Please use MP3, WAV, or OGG</span
+                  >
+                  <span *ngIf="trackForm.get('audioFile')?.errors?.['maxSize']"
+                    >File size exceeds 15MB limit</span
+                  >
+                </div>
+
+                <svg
+                  *ngIf="audioFileValidated"
+                  class="h-6 w-6 text-success"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  ></path>
+                </svg>
               </div>
             </div>
           </div>
         </div>
 
         <!-- Image Upload -->
+        <!-- Image Upload -->
         <div class="sm:col-span-2">
-          <label class="label text-primary dark:text-blue-400">Track Image</label>
-          <div class="mt-1 flex justify-center px-4 py-3 border-2 border-dashed rounded-md border-primary">
+          <label class="label text-primary dark:text-blue-400"
+            >Track Image</label
+          >
+          <div
+            class="mt-1 flex justify-center px-4 py-3 border-2 border-dashed rounded-md"
+            [ngClass]="{
+              'border-error':
+                trackForm.get('coverImage')?.invalid &&
+                trackForm.get('coverImage')?.touched,
+              'border-primary':
+                !trackForm.get('coverImage')?.invalid ||
+                !trackForm.get('coverImage')?.touched
+            }"
+          >
             <div class="flex items-center gap-4">
-              <svg class="h-8 w-8 text-primary" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              <svg
+                class="h-8 w-8 text-primary"
+                stroke="currentColor"
+                fill="none"
+                viewBox="0 0 48 48"
+                aria-hidden="true"
+              >
+                <path
+                  d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
               </svg>
               <div>
-                <label class="btn btn-outline btn-sm text-primary hover:bg-primary hover:text-white border-primary">
+                <label
+                  class="btn btn-outline btn-sm text-primary hover:bg-primary hover:text-white border-primary"
+                >
                   <span>Upload image</span>
-                  <input type="file" class="sr-only" (change)="onImageSelected($event)" accept="image/*">
+                  <input
+                    type="file"
+                    class="sr-only"
+                    (change)="onImageSelected($event)"
+                    accept="image/png,image/jpeg,image/gif"
+                    formControlName="coverImage"
+                  />
                 </label>
                 <p class="text-xs text-primary mt-1">PNG, JPG, GIF up to 2MB</p>
+                <div
+                  *ngIf="
+                    trackForm.get('coverImage')?.invalid &&
+                    trackForm.get('coverImage')?.touched
+                  "
+                  class="text-error text-sm mt-1"
+                >
+                  <span
+                    *ngIf="trackForm.get('coverImage')?.errors?.['invalidFormat']"
+                    >Invalid image format. Please use PNG, JPG, or GIF</span
+                  >
+                  <span *ngIf="trackForm.get('coverImage')?.errors?.['maxSize']"
+                    >Image size exceeds 2MB limit</span
+                  >
+                </div>
+                <svg
+                  *ngIf="imageFileValidated"
+                  class="h-6 w-6 text-success"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  ></path>
+                </svg>
               </div>
             </div>
           </div>
@@ -84,8 +263,20 @@
       </div>
 
       <div class="flex justify-end mt-6 gap-2">
-        <button type="submit" class="btn bg-primary hover:bg-primary/90 text-white">Save</button>
-        <button type="button" class="btn bg-secondary hover:bg-secondary/90 text-white" onclick="new_track_modal.close()">Cancel</button>
+        <button
+          type="submit"
+          class="btn bg-primary hover:bg-primary/90 text-white"
+          [disabled]="trackForm.invalid"
+        >
+          Save
+        </button>
+        <button
+          type="button"
+          class="btn bg-secondary hover:bg-secondary/90 text-white"
+          onclick="new_track_modal.close()"
+        >
+          Cancel
+        </button>
       </div>
     </form>
   </section>

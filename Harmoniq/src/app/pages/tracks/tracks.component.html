@@ -2,23 +2,17 @@
 <main class="bg-base-100 p-4">
   <div>
     <div class="flex justify-between items-center mb-4">
-      <h1 class="text-xl font-bold text-primary dark:text-blue-400">Made for you</h1>
-      <a href="#" class="text-[13px] font-bold text-primary dark:text-white dark:hover:text-blue-400 hover:text-white">Show all</a>
+      <h1 class="text-xl font-bold text-primary">Made for you</h1>
     </div>
 
     <section class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-      <!-- First card -->
-      <app-track-card></app-track-card>
-
-
-
-
-
-
-
-
-      <!-- END OF CARD -->
+      <app-track-card
+        *ngFor="let track of tracks"
+        [track]="track"
+        (playTrack)="onPlayTrack($event)">
+      </app-track-card>
     </section>
   </div>
+  <app-audio-player></app-audio-player>
 </main>
 

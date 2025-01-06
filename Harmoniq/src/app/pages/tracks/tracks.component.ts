@@ -1,16 +1,24 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
-import { HeroComponent } from '../../UI/hero/hero.component';
+import { Component } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { loadTrack, play } from '../../state/audio-player/audio-player.action';
+import { Track } from '../../models/track.interface';
 import { TrackCardComponent } from '../../UI/track-card/track-card.component';
+import { AudioPlayerComponent } from '../../UI/audio-player/audio-player.component';
 
 @Component({
   selector: 'app-tracks',
   templateUrl: './tracks.component.html',
   standalone: true,
-  imports: [HeroComponent,TrackCardComponent],
+  imports: [TrackCardComponent,AudioPlayerComponent],
   styleUrls: ['./tracks.component.scss']
 })
-export class TracksComponent  {
+export class TracksComponent {
+  constructor(private store: Store) {}
 
+  onPlayTrack(track: Track) {
+    this.store.dispatch(loadTrack({ track }));
+    this.store.dispatch(play());
   }
+}
 
 
