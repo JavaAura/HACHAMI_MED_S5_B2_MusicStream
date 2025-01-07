@@ -1,9 +1,20 @@
 import { ApplicationConfig } from '@angular/core';
 import { provideRouter } from '@angular/router';
-
 import { routes } from './app.routes';
 import { provideStore } from '@ngrx/store';
+import { provideEffects } from '@ngrx/effects';
+import { TracksEffects } from './state/tracks/tracks.effects';
+import { tracksReducer } from './state/tracks/tracks.reducer';
+
+
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideRouter(routes), provideStore()]
+  providers: [
+    provideRouter(routes),
+    provideStore({ tracks: tracksReducer }),
+    provideEffects([TracksEffects]),
+
+  ]
 };
+
+

@@ -1,23 +1,20 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Track } from '../../models/track.interface';
-import { AudioService } from '../../service/audio.service';
 import { CommonModule } from '@angular/common';
-import { Store } from '@ngrx/store';
-import { loadTrack, play } from '../../state/audio-player/audio-player.action';
+import { BlobToUrlPipe } from '../../pipes/blob-to-url.pipe';
 
 @Component({
   selector: 'app-track-card',
   standalone: true,
-  imports: [CommonModule],
-  templateUrl: './track-card.component.html'
+  imports: [CommonModule, BlobToUrlPipe],
+  templateUrl: './track-card.component.html',
+  styleUrls: ['./track-card.component.scss']
 })
 export class TrackCardComponent {
   @Input() track!: Track;
+  @Output() playTrack = new EventEmitter<Track>();
 
-  constructor(private store: Store) {}
-
-  onPlayClick() {
-    this.store.dispatch(loadTrack({ track: this.track }));
-    this.store.dispatch(play());
+  onPlay() {
+    this.playTrack.emit(this.track);
   }
 }
