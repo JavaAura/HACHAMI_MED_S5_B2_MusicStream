@@ -1,0 +1,76 @@
+<div class="min-h-screen  text-white p-4 sm:p-8 font-sans">
+  <div class="max-w-7xl mx-auto">
+    <ng-container *ngIf="track$ | async as track; else loading">
+      <div class="flex flex-col sm:flex-row gap-4 sm:gap-8 mb-8">
+        <div class="album-cover w-full sm:w-64 h-64 bg-cover bg-center rounded-lg shadow-lg shrink-0" [style.backgroundImage]="getSafeImageUrl(track.imageUrl)"></div>
+        <div class="flex flex-col justify-end">
+          <span class="text-sm mb-2">{{ formatCategory(track.category) }}</span>
+          <h1 class="text-4xl sm:text-6xl font-extrabold mb-2">{{ track.songName }}</h1>
+          <div class="text-lg sm:text-2xl opacity-90">
+            <span>{{ track.singerName }}</span>
+            <span class="opacity-70 text-sm sm:text-base block sm:inline mt-2 sm:mt-0">
+              • {{ track.dateAdded | date:'yyyy' }} • 1 song, {{ formatDuration(track.duration) }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex gap-4 sm:gap-8 items-center my-8">
+        <button (click)="playTrack(track)" class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-blue-500 flex items-center justify-center hover:scale-105 transition-transform">
+          <svg class="w-5 h-5 sm:w-6 sm:h-6 text-white" viewBox="0 0 24 24" fill="currentColor">
+            <path *ngIf="!isCurrentlyPlaying" d="M8 5v14l11-7z"/>
+            <path *ngIf="isCurrentlyPlaying" d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+          </svg>
+        </button>
+        <button class="text-white opacity-70 hover:opacity-100 transition-opacity">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M6 20h2v-2H6v2zm0-4h2v-2H6v2zm0-4h2v-2H6v2zm0-4h2V6H6v2zm4 12h2v-2h-2v2zm0-4h2v-2h-2v2zm0-4h2v-2h-2v2zm0-4h2V6h-2v2zm4 12h2v-2h-2v2zm0-4h2v-2h-2v2zm0-4h2v-2h-2v2zm0-4h2V6h-2v2zm4 12h2v-2h-2v2zm0-4h2v-2h-2v2zm0-4h2v-2h-2v2z"/>
+          </svg>
+        </button>
+        <button class="text-white opacity-70 hover:opacity-100 transition-opacity">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="bg-black bg-opacity-30 rounded-lg p-4 my-8 overflow-x-auto">
+        <div class="grid grid-cols-[50px_1fr_150px_100px] text-sm text-gray-400 border-b border-white border-opacity-10 pb-2 mb-2 min-w-[500px]">
+          <span>#</span>
+          <span>Title</span>
+          <span>Category</span>
+          <span>Duration</span>
+        </div>
+        <div class="grid grid-cols-[50px_1fr_150px_100px] items-center py-2 hover:bg-white hover:bg-opacity-10 rounded transition-colors min-w-[500px] cursor-pointer p-2">
+          <span>1</span>
+          <div class="flex flex-col">
+            <span>{{ track.songName }}</span>
+            <span class="text-sm text-gray-400">{{ track.singerName }}</span>
+          </div>
+          <span>{{ formatCategory(track.category) }}</span>
+          <span>{{ formatDuration(track.duration) }}</span>
+        </div>
+      </div>
+
+      <div class="mt-12">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-xl sm:text-2xl font-bold">More by {{ track.singerName }}</h2>
+          <a href="#" class="text-sm text-gray-400 hover:underline">See discography</a>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+          @for (album of relatedAlbums; track album.title) {
+            <div class="aspect-square overflow-hidden rounded transition-transform hover:scale-105">
+              <img [src]="album.imageUrl" [alt]="album.title" class="w-full h-full object-cover" />
+            </div>
+          }
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-template #loading>
+      <div class="flex justify-center items-center h-screen">
+        <p class="text-2xl">Loading...</p>
+      </div>
+    </ng-template>
+  </div>
+</div>

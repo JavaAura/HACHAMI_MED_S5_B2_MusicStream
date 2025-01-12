@@ -1,0 +1,12 @@
+/* Add these styles to ensure sidebar shows full content */
+:host {
+  display: block;
+  height: 100%;
+  overflow-y: auto;
+}
+
+/* If you're using a container div inside the sidebar component, also add: */
+.sidebar-container {
+  height: 100%;
+  overflow-y: auto;
+}

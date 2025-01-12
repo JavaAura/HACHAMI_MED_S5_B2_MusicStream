@@ -7,7 +7,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
-<body>
+<body class="bg-gray-100">
   <app-root></app-root>
 </body>
+<script >
+  const ThemeManager = {
+  // Check if user has a saved preference
+  init() {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    this.setTheme(savedTheme);
+  },
+
+  // Toggle between light and dark themes
+  toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    this.setTheme(newTheme);
+  },
+
+  // Set specific theme
+  setTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    // Add or remove dark class
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('theme', theme);
+  }
+};
+
+// Initialize theme on page load
+document.addEventListener('DOMContentLoaded', () => ThemeManager.init());
+</script>
 </html>

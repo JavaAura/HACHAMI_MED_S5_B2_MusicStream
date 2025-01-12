@@ -1,0 +1,35 @@
+<div class="quotes-slider">
+  <div class="background-image"
+       [style.backgroundImage]="'url(' + quotes[currentSlide].backgroundImage + ')'">
+  </div>
+  <div class="overlay"></div>
+  <div class="quotes-container" [@fadeAnimation]>
+      <div class="quote-content">
+          <p class="quote-text">{{quotes[currentSlide].text}}</p>
+          <div class="quote-author">
+              <strong>{{quotes[currentSlide].author}}</strong>
+              <span *ngIf="quotes[currentSlide].role">{{quotes[currentSlide].role}}</span>
+          </div>
+      </div>
+  </div>
+
+  <div class="slider_nav">
+      <button class="prev" (click)="prevSlide()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+              <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+          </svg>
+      </button>
+      <button class="next" (click)="nextSlide()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+              <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+          </svg>
+      </button>
+  </div>
+
+  <div class="slider-dots">
+      <span *ngFor="let quote of quotes; let i = index"
+            [class.active]="i === currentSlide"
+            (click)="currentSlide = i">
+      </span>
+  </div>
+</div>
