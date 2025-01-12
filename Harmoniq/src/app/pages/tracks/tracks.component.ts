@@ -1,54 +1,87 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef, OnDestroy, Inject } from '@angular/core';
+// import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
-import { CommonModule } from '@angular/common';
-import { MessageService } from 'primeng/api';
-
-import { TrackCardComponent } from '../../UI/track-card/track-card.component';
-import { AudioPlayerComponent } from '../../UI/audio-player/audio-player.component';
-import { TrackService } from '../../service/track.service';
+import { Observable } from 'rxjs';
 import { Track } from '../../models/track.interface';
-import { selectAllTracks } from '../../state/tracks/tracks.selectors';
-import * as TracksActions from '../../state/tracks/tracks.actions';
-import { Subscription } from 'rxjs';
-import { ToastModule } from 'primeng/toast';
-import { ButtonModule } from 'primeng/button';
+import * as TrackActions from '../../state/tracks/tracks.actions';
+import * as TrackSelectors from '../../state/tracks/tracks.selectors';
+// import { TrackFormComponent } from '../track/components/track-form/track-form.component';
+import { AlertService } from '../../service/alert.service';
+import { AppState } from '../../state/store/app.state';
+import { Router } from '@angular/router';
+// import { SearchService } from '../../shared/services/search.service';
+import { TrackCardComponent } from '../../UI/track-card/track-card.component';
+import { TrackPlayerService } from '../../service/track-player.service';
+import { CommonModule } from '@angular/common';
+
+
+
 @Component({
   selector: 'app-tracks',
   templateUrl: './tracks.component.html',
   standalone: true,
-  imports: [TrackCardComponent, AudioPlayerComponent, CommonModule, ToastModule , ButtonModule],
+  imports: [TrackCardComponent,CommonModule],
   styleUrls: ['./tracks.component.scss'],
-  providers: [MessageService]
+  // providers:[TrackPlayerService]
+
 })
 export class TracksComponent implements OnInit, OnDestroy {
-  tracks$ = this.store.select(selectAllTracks);
-  private subscription: Subscription | undefined;
+  selectedTrack: Track | null = null;
+  tracks$ = this.store.select(TrackSelectors.selectAllTracks);
+  loading$ = this.store.select(TrackSelectors.selectTrackState);
+  currentlyPlaying$ = this.store.select(TrackSelectors.selectCurrentTrack);
+  private tracks: Track[] = [];
+  allTracks: Track[] = []; // Store all tracks
+  filteredTracks: Track[] = []; // Store filtered tracks
 
   constructor(
-    private store: Store,
-    private messageService: MessageService
+    private store: Store<AppState>,
+    private alertService: AlertService,
+    @Inject(TrackPlayerService) private trackPlayerService: TrackPlayerService,
+    // private trackPlayerService: TrackPlayerService,
+    private router: Router,
   ) {}
 
-  ngOnInit() {
-    // Load tracks only if they haven't been loaded yet
-    this.store.dispatch(TracksActions.loadTracks());
+  ngOnInit(): void {
+    this.tracks$.subscribe(tracks => {
+      // Store tracks to clean up URLs later
+      this.tracks = tracks;
+      this.allTracks = tracks;
+      this.filteredTracks = this.allTracks;
+    });
+
+    // console.log("track",this.tracks);
+
+    this.store.dispatch(TrackActions.loadTracks());
+
+    // Subscribe to search terms
+    // this.searchService.currentSearchTerm$.subscribe(searchTerm => {
+    //   this.filterTracks(searchTerm);
+    // });
   }
 
-  ngOnDestroy() {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
+  ngOnDestroy(): void {
+    // Clean up object URLs
+    this.tracks.forEach(track => {
+      if (track.imageUrl) {
+        URL.revokeObjectURL(track.imageUrl);
+      }
+    });
+  }
+
+  private filterTracks(searchTerm: string) {
+    if (!searchTerm.trim()) {
+      this.filteredTracks = this.allTracks;
+      return;
     }
+
+    searchTerm = searchTerm.toLowerCase();
+    this.filteredTracks = this.allTracks.filter(track =>
+      track.songName.toLowerCase().includes(searchTerm) ||
+      track.singerName.toLowerCase().includes(searchTerm)
+    );
   }
 
-  onPlayTrack(track: Track) {
-    console.log('Playing track:', track);
-    // Here you can dispatch an action to handle track playback
-    // this.store.dispatch(PlayerActions.playTrack({ track }));
-  }
 
-  showSuccess() {
-    this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Message Content' });
-  }
+
 }
-
-

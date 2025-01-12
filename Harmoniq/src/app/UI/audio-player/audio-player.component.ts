@@ -1,69 +1,106 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { take } from 'rxjs/operators';
-
-
+import { Subscription } from 'rxjs';
+// import { AudioPlayerService } from '../../service/audioplayer.service';
+import { Track } from '../../models/track.interface';
+import * as TrackSelectors from "../../state/tracks/tracks.selectors"
+import { CommonModule } from '@angular/common';
+// import { BlobToUrlPipe } from '../../pipes/safe-url.pipe';
+import { TrackPlayerService } from '../../service/track-player.service';
+import { PlayerService } from '../../service/player.service';
 @Component({
   selector: 'app-audio-player',
   templateUrl: './audio-player.component.html',
+  styleUrls: ['./audio-player.component.scss'],
   standalone: true,
-  styleUrls: ['./audio-player.component.scss']
+  imports: [CommonModule],
 })
-export class AudioPlayerComponent  {
-//   private audio = new Audio();
-//   currentTrack$ = this.store.select(selectCurrentTrack);
-//   isPlaying$ = this.store.select(selectIsPlaying);
-//   progress$ = this.store.select(selectProgress);
-//   volume$ = this.store.select(selectVolume);
+export class AudioPlayerComponent {
+  currentTrack: Track | null = null;
+  isPlaying = false;
+  currentTime = '0:00';
+  duration = '0:00';
+  progress = 0;
+  tracks$ = this.store.select(TrackSelectors.selectAllTracks);
+  private trackSubscription!: Subscription;
+  private progressSubscription!: Subscription;
+  volume = 100;
+  private previousVolume = 100;
 
-//   constructor(private store: Store) {}
-// ngOnInit() {
-//     this.currentTrack$.subscribe(track => {
-//       if (track) {
-//         this.audio.src = track.audioUrl;
-//         this.audio.load();
-//       }
-//     });
+  constructor(
+    private trackPlayerService: PlayerService,
+    private store: Store
+  ) {}
 
-//     this.isPlaying$.subscribe(isPlaying => {
-//       if (isPlaying) {
-//         this.audio.play();
-//       } else {
-//         this.audio.pause();
-//       }
-//     });
+  ngOnInit() {
+    // Subscribe to current track
+    this.trackSubscription = this.trackPlayerService.getCurrentTrack()
+      .subscribe(track => {
+        this.currentTrack = track;
+        this.isPlaying = !!track;
+      });
 
-//     this.audio.addEventListener('timeupdate', () => {
-//       const progress = (this.audio.currentTime / this.audio.duration) * 100;
-//       this.store.dispatch(AudioPlayerActions.updateProgress({ progress }));
-//     });
+    // Subscribe to progress updates
+    this.progressSubscription = this.trackPlayerService.getProgress()
+      .subscribe(({ currentTime, duration, progress }) => {
+        this.currentTime = currentTime;
+        this.duration = duration;
+        this.progress = progress;
+      });
+  }
 
-//     this.audio.addEventListener('ended', () => {
-//       this.store.dispatch(AudioPlayerActions.next());
-//     });
-//   }
+  togglePlay() {
+    if (this.currentTrack) {
+      if (this.isPlaying) {
+        this.trackPlayerService.pauseTrack();
+      } else {
+        this.trackPlayerService.resumeTrack();
+      }
+      this.isPlaying = !this.isPlaying;
+    }
+  }
 
-//   togglePlay() {
-//     this.isPlaying$.pipe(take(1)).subscribe(isPlaying => {
-//       if (isPlaying) {
-//         this.store.dispatch(AudioPlayerActions.pause());
-//       } else {
-//         this.store.dispatch(AudioPlayerActions.play());
-//       }
-//     });
-//   }
+  playNextTrack() {
+    this.trackPlayerService.playNextTrack();
+  }
 
-//   onProgressChange(event: Event) {
-//     const progress = +(event.target as HTMLInputElement).value;
-//     const time = (progress / 100) * this.audio.duration;
-//     this.audio.currentTime = time;
-//     this.store.dispatch(AudioPlayerActions.updateProgress({ progress }));
-//   }
+  playPreviousTrack() {
+    this.trackPlayerService.playPreviousTrack();
+  }
 
-//   onVolumeChange(event: Event) {
-//     const volume = +(event.target as HTMLInputElement).value;
-//     this.audio.volume = volume;
-//     this.store.dispatch(AudioPlayerActions.setVolume({ volume }));
-//   }
+  seekTo(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.trackPlayerService.seekTo(Number(value));
+  }
 
+  setVolume(event: Event): void {
+    const value = (event.target as HTMLInputElement).valueAsNumber;
+    this.volume = value;
+    this.trackPlayerService.setVolume(value);
+  }
+
+  toggleMute(): void {
+    if (this.volume > 0) {
+      this.previousVolume = this.volume;
+      this.volume = 0;
+    } else {
+      this.volume = this.previousVolume;
+    }
+    this.trackPlayerService.setVolume(this.volume);
+  }
+
+  formatTime(time: number): string {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  }
+
+  ngOnDestroy() {
+    if (this.trackSubscription) {
+      this.trackSubscription.unsubscribe();
+    }
+    if (this.progressSubscription) {
+      this.progressSubscription.unsubscribe();
+    }
+  }
 }

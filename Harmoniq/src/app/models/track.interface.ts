@@ -1,18 +1,19 @@
-export interface TrackMetadata {
-  id?: number;
-  name: string;
-  artist: string;
-  description: string;
-  category: string;
-  createdAt: string;
-  fileSize: number;
-  fileType: string;
-  hasImage: boolean;
-}
-
 export interface Track {
   id: string;
-  metadata: TrackMetadata;
-  audioBlob: Blob;
-  imageBlob?: Blob;
+  songName: string;
+  singerName: string;
+  category: CategoryType;
+  description?: string;
+  dateAdded: Date;
+  duration: number;
+  imageUrl?: string | null;
+}
+
+
+export enum CategoryType {
+  POP = 'pop',
+  ROCK = 'rock',
+  RAP = 'rap',
+  CHA3BI = 'cha3bi',
+  RAI = 'rai'
 }

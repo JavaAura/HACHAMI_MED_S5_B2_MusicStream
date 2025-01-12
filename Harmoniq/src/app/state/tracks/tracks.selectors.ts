@@ -1,14 +1,34 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { TracksState } from './tracks.reducer';
+import { TrackState } from './tracks.reducer';
 
-// Feature selector
-export const selectTracksState = createFeatureSelector<TracksState>('tracks');
+export const selectTrackState = createFeatureSelector<TrackState>('track');
 
-// Individual selectors
-export const selectAllTracks = createSelector(selectTracksState, state => state.tracks);
+export const selectAllTracks = createSelector(
+  selectTrackState,
+  state => state.tracks
+);
 
-export const selectTrackById = (trackId: string) =>
-  createSelector(selectAllTracks, tracks => tracks.find(track => track.id === trackId));
+export const selectCurrentTrack = createSelector(
+  selectTrackState,
+  state => state.currentTrack
+);
 
-export const selectTracksLoading = createSelector(selectTracksState, state => state.loading);
-export const selectTracksError = createSelector(selectTracksState, state => state.error);
+export const selectIsLoading = createSelector(
+  selectTrackState,
+  state => state.loading
+);
+
+export const selectError = createSelector(
+  selectTrackState,
+  state => state.error
+);
+
+export const selectIsPlaying = createSelector(
+  selectTrackState,
+  state => state.isPlaying
+);
+
+export const selectTrackById = (trackId: string | null) => createSelector(
+  selectAllTracks,
+  (tracks) => tracks.find(track => track.id === trackId)
+);

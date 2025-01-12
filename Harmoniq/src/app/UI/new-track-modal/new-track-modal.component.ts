@@ -7,9 +7,8 @@ import { Store } from '@ngrx/store';
 import * as TracksActions from '../../state/tracks/tracks.actions';
 import { Actions, ofType } from '@ngrx/effects';
 import { take } from 'rxjs/operators';
-import { ToastModule } from 'primeng/toast';
-import { ButtonModule } from 'primeng/button';
-import { MessageService } from 'primeng/api';
+
+import { Track } from '../../models/track.interface';
 
 
 interface ValidationError {
@@ -25,12 +24,11 @@ interface ValidationError {
     ReactiveFormsModule,
     FormsModule,
     CommonModule,
-    ToastModule,
-    ButtonModule
+
   ],
   templateUrl: './new-track-modal.component.html',
   styleUrl: './new-track-modal.component.scss',
-  providers: [MessageService]
+
 })
 export class NewTrackModalComponent implements OnInit {
   trackForm!: FormGroup;
@@ -47,7 +45,7 @@ export class NewTrackModalComponent implements OnInit {
     private trackService: TrackService,
     private store: Store,
     private actions$: Actions,
-    private messageService: MessageService
+
   ) {
     this.createForm();
   }
@@ -135,63 +133,32 @@ export class NewTrackModalComponent implements OnInit {
       try {
         const formData = this.trackForm.value;
 
-        if (!formData.audioFile) {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'No audio file selected'
-          });
-          return;
-        }
 
-        const trackData = {
+        const trackData: Track = {
           id: Date.now().toString(),
-          metadata: {
-            name: formData.name.trim(),
-            artist: formData.artist.trim(),
-            description: formData.description?.trim(),
-            category: formData.category,
-            createdAt: new Date().toISOString(),
-            fileSize: formData.audioFile.size,
-            fileType: formData.audioFile.type,
-            hasImage: !!formData.imageFile
-          },
-          audioBlob: formData.audioFile,
-          imageBlob: formData.imageFile || null
+          songName: formData.name.trim(),   // Map name to songName
+          singerName: formData.artist.trim(),  // Map artist to singerName
+          category: formData.category,       // CategoryType enum
+          description: formData.description?.trim(),
+          dateAdded: new Date(),             // Add the current date to dateAdded
+          duration: formData.audioFile.duration, // Assuming you can get the audio duration
+          imageUrl: formData.imageFile ? URL.createObjectURL(formData.imageFile) : null,  // Map imageFile to imageUrl
         };
 
-        this.store.dispatch(TracksActions.addTrack({ track: trackData }));
+        // Log the track data
+        console.log("track", trackData);
 
-        this.actions$.pipe(
-          ofType(TracksActions.addTrackSuccess, TracksActions.addTrackFailure),
-          take(1)
-        ).subscribe(action => {
-          if (action.type === '[Tracks] Add Track Success') {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Success',
-              detail: 'Track added successfully!'
-            });
-            this.trackForm.reset();
-            this.audioFileValidated = false;
-            this.imageFileValidated = false;
-          } else {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Failed to add track. Please try again.'
-            });
-          }
-        });
+        // Dispatch the action
+        this.store.dispatch(TracksActions.createTrack({
+          track: trackData,
+          audioFile: formData.audioFile,   // Pass audioFile
+          imageFile: formData.imageFile     // Pass imageFile (optional)
+        }));
+
+      
 
       } catch (error) {
         console.error('Error submitting track:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'An unexpected error occurred. Please try again.'
-        });
-        throw error;
       }
     } else {
       console.error('Form validation failed', {
@@ -199,27 +166,10 @@ export class NewTrackModalComponent implements OnInit {
         audioValidated: this.audioFileValidated,
         formErrors: this.trackForm.errors
       });
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Warning',
-        detail: 'Please fill in all required fields correctly.'
-      });
+
     }
   }
 
-  show() {
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Success',
-      detail: 'Track added successfully'
-    });
-  }
 
-  showSuccess() {
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Success',
-      detail: 'Message Content'
-    });
-  }
+
 }

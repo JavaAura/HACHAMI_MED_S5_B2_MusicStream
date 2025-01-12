@@ -3,60 +3,163 @@
     <!-- Track Info -->
     <!-- <div class="flex items-center space-x-4">
       <img
-        *ngIf="(currentTrack$ | async)?.albumArt"
-        [src]="(currentTrack$ | async)?.albumArt"
+        *ngIf="(playerState$ | async)?.track?.imageBlob"
+
         class="w-12 h-12 rounded"
         alt="Album Art"
-      >
+      />
+
       <div>
-        <div class="font-medium">{{ (currentTrack$ | async)?.title }}</div>
-        <div class="text-sm text-gray-500">{{ (currentTrack$ | async)?.artist }}</div>
+        <div class="font-medium">
+          {{ (playerState$ | async)?.track?.metadata?.name || 'Unknown Title' }}
+        </div>
+        <div class="text-sm text-gray-500">
+          {{ (playerState$ | async)?.track?.metadata?.artist || 'Unknown Artist' }}
+        </div>
       </div>
     </div> -->
 
     <!-- Playback Controls -->
     <!-- <div class="flex items-center space-x-4">
       <button
-        [disabled]="!(canPlayPrevious$ | async)"
         (click)="previous()"
-        class="btn btn-circle btn-sm">
+        class="btn btn-circle btn-sm"
+      >
         <i class="fas fa-step-backward"></i>
       </button>
 
-      <button
-        (click)="togglePlay()"
-        class="btn btn-circle btn-primary">
-        <i class="fas" [class.fa-play]="!(isPlaying$ | async)" [class.fa-pause]="isPlaying$ | async"></i>
+      <button (click)="togglePlay()" class="btn btn-circle btn-primary">
+        <i
+        class="fas"
+        [class.fa-play]="(playerState$ | async)?.status !== 'playing'"
+        [class.fa-pause]="(playerState$ | async)?.status === 'playing'"
+      ></i>
+
       </button>
 
       <button
-        [disabled]="!(canPlayNext$ | async)"
         (click)="next()"
-        class="btn btn-circle btn-sm">
+        class="btn btn-circle btn-sm"
+      >
         <i class="fas fa-step-forward"></i>
       </button>
     </div> -->
 
     <!-- Progress & Volume -->
-    <!-- <div class="flex items-center space-x-4">
-      <input
+    <!-- <div class="flex items-center space-x-4"> -->
+      <!-- <input
         type="range"
-        [value]="progress$ | async"
+        [value]="(playerState$ | async)?.progress || 0"
         (input)="onProgressChange($event)"
         class="range range-xs range-primary"
         min="0"
         max="100"
-      >
+      />
 
       <input
         type="range"
-        [value]="volume$ | async"
+        [value]="(playerState$ | async)?.volume || 1"
         (input)="onVolumeChange($event)"
         class="range range-xs range-primary w-24"
         min="0"
         max="1"
         step="0.1"
-      >
-    </div> -->
-  <!-- </div>
+      /> -->
+    <!-- </div>
+  </div>
 </div> -->
+
+
+<footer *ngIf="currentTrack" class="bg-base-200 fixed bottom-0 left-0 w-full backdrop-blur-lg border-t border-gray-800 shadow-lg z-50">
+  <div class="container mx-auto px-2 sm:px-4 py-2 sm:py-3 flex flex-col sm:flex-row items-center gap-2 sm:gap-0 sm:justify-between">
+    <!-- Track Information -->
+    <div class="flex items-center space-x-4 w-full sm:w-auto justify-center sm:justify-start">
+      <div class="min-w-0">
+        <p class="text-sm font-semibold text-white truncate text-center sm:text-left">{{ currentTrack.songName || 'No Track Selected' }}</p>
+        <p class="text-xs text-gray-400 truncate text-center sm:text-left">{{ currentTrack.singerName || 'Unknown Artist' }}</p>
+      </div>
+    </div>
+
+    <!-- Audio Controls -->
+    <div class="flex flex-col items-center space-y-2 w-full sm:flex-1 sm:max-w-2xl sm:px-4 order-first sm:order-none">
+      <div class="flex items-center space-x-6">
+        <!-- Previous Track Button -->
+        <button class="p-2 text-gray-400 hover:text-white transition-colors"
+                [disabled]="!(tracks$ | async)?.length"
+                (click)="playPreviousTrack()">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+          </svg>
+        </button>
+
+        <!-- Play/Pause Button -->
+        <button class="p-2 sm:p-3 bg-red-600 rounded-full hover:bg-red-700 text-white transform hover:scale-105 transition-all duration-200 shadow-lg"
+                [disabled]="!currentTrack"
+                (click)="togglePlay()">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path *ngIf="!isPlaying" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+            <path *ngIf="isPlaying" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </button>
+
+        <!-- Next Track Button -->
+        <button class="p-2 text-gray-400 hover:text-white transition-colors"
+                [disabled]="!(tracks$ | async)?.length"
+                (click)="playNextTrack()">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="flex items-center space-x-2 w-full">
+        <span class="text-xs text-gray-400 w-10 sm:w-12 text-right">{{ currentTime }}</span>
+        <div class="relative flex-1 h-1 bg-gray-700 rounded-full">
+          <input
+            type="range"
+            class="absolute w-full h-full opacity-0 cursor-pointer"
+            min="0"
+            max="100"
+            [value]="progress"
+            (input)="seekTo($event)"
+          />
+          <div class="absolute top-0 left-0 h-full bg-green-500 rounded-full" [style.width.%]="progress"></div>
+        </div>
+        <span class="text-xs text-gray-400 w-10 sm:w-12">{{ duration }}</span>
+      </div>
+    </div>
+
+    <!-- Volume Control -->
+    <div class="hidden sm:flex items-center space-x-3">
+      <button class="p-2 text-gray-400 hover:text-white transition-colors" (click)="toggleMute()">
+        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <!-- High volume icon (volume > 50) -->
+          <path *ngIf="volume > 50" d="M11 5L6 9H2V15H6L11 19V5ZM19.07 4.93C20.91 6.77 22 9.24 22 12C22 14.76 20.91 17.23 19.07 19.07M15.54 8.46C16.47 9.39 17 10.62 17 12C17 13.38 16.47 14.61 15.54 15.54" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+          <!-- Medium volume icon (volume between 1-50) -->
+          <path *ngIf="volume > 0 && volume <= 50" d="M11 5L6 9H2V15H6L11 19V5ZM15.54 8.46C16.47 9.39 17 10.62 17 12C17 13.38 16.47 14.61 15.54 15.54" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+          <!-- Muted icon (volume = 0) -->
+          <g *ngIf="volume === 0">
+            <path d="M11 5L6 9H2V15H6L11 19V5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M23 9L17 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M17 9L23 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+        </svg>
+      </button>
+      <input
+        type="range"
+        class="w-20 h-1 bg-red-700 rounded appearance-none cursor-pointer focus:outline-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white hover:[&::-webkit-slider-thumb]:bg-green-500"
+        min="0"
+        max="100"
+        [value]="volume"
+        (input)="setVolume($event)"
+      />
+      <div class=" text-white">{{volume}}%</div>
+    </div>
+  </div>
+</footer>
