@@ -1,13 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, Inject, Input } from '@angular/core';
 import { Track } from '../../models/track.interface';
-import { TrackPlayerService } from '../../service/track-player.service';
 import { PlayerService } from '../../service/player.service';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-track-card',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,RouterModule],
   templateUrl: './track-card.component.html',
   styleUrls: ['./track-card.component.scss'],
 })
@@ -34,5 +34,9 @@ export class TrackCardComponent {
     } else {
       console.error('Track ID is missing or invalid');
     }
+  }
+
+  navigateToTrackDetails(id:string){
+    
   }
 }

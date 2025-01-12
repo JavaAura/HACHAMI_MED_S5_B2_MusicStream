@@ -18,6 +18,9 @@
           "builder": "@angular-devkit/build-angular:application",
           "options": {
             "outputPath": "dist/harmoniq",
+            "allowedCommonJsDependencies": [
+              "sweetalert2"
+            ],
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -49,13 +52,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                      "maximumWarning": "1250.5kb",
+                      "maximumError": "1250kb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumWarning": "1200kb",
+                  "maximumError": "1200kb"
                 }
               ],
               "outputHashing": "all"

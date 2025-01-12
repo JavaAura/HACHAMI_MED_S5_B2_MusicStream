@@ -19,13 +19,5 @@ export class AppComponent {
 
   constructor( public router: Router) {}
 
-  // ngOnInit() {
-  //   this.primengConfig.ripple = true;
-  //   // Add default toast configuration
-  //   this.primengConfig.setTranslation({
-  //     accept: 'Accept',
-  //     reject: 'Cancel',
-  //     //Add more translations if needed
-  //   });
-  // }
+ 
 }

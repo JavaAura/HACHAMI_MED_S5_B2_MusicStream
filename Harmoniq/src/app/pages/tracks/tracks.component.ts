@@ -5,22 +5,20 @@ import { Observable } from 'rxjs';
 import { Track } from '../../models/track.interface';
 import * as TrackActions from '../../state/tracks/tracks.actions';
 import * as TrackSelectors from '../../state/tracks/tracks.selectors';
-// import { TrackFormComponent } from '../track/components/track-form/track-form.component';
 import { AlertService } from '../../service/alert.service';
 import { AppState } from '../../state/store/app.state';
 import { Router } from '@angular/router';
 // import { SearchService } from '../../shared/services/search.service';
 import { TrackCardComponent } from '../../UI/track-card/track-card.component';
-import { TrackPlayerService } from '../../service/track-player.service';
 import { CommonModule } from '@angular/common';
-
+import { RouterModule } from '@angular/router';
 
 
 @Component({
   selector: 'app-tracks',
   templateUrl: './tracks.component.html',
   standalone: true,
-  imports: [TrackCardComponent,CommonModule],
+  imports: [TrackCardComponent,CommonModule ,RouterModule],
   styleUrls: ['./tracks.component.scss'],
   // providers:[TrackPlayerService]
 
@@ -32,12 +30,12 @@ export class TracksComponent implements OnInit, OnDestroy {
   currentlyPlaying$ = this.store.select(TrackSelectors.selectCurrentTrack);
   private tracks: Track[] = [];
   allTracks: Track[] = []; // Store all tracks
-  filteredTracks: Track[] = []; // Store filtered tracks
+  // filteredTracks: Track[] = []; // Store filtered tracks
+  groupedTracks: Map<string, Track[]> = new Map();
 
   constructor(
     private store: Store<AppState>,
     private alertService: AlertService,
-    @Inject(TrackPlayerService) private trackPlayerService: TrackPlayerService,
     // private trackPlayerService: TrackPlayerService,
     private router: Router,
   ) {}
@@ -47,7 +45,9 @@ export class TracksComponent implements OnInit, OnDestroy {
       // Store tracks to clean up URLs later
       this.tracks = tracks;
       this.allTracks = tracks;
-      this.filteredTracks = this.allTracks;
+      this.groupTracksByCategory(tracks);
+
+      // this.filteredTracks = this.allTracks;
     });
 
     // console.log("track",this.tracks);
@@ -69,17 +69,27 @@ export class TracksComponent implements OnInit, OnDestroy {
     });
   }
 
-  private filterTracks(searchTerm: string) {
-    if (!searchTerm.trim()) {
-      this.filteredTracks = this.allTracks;
-      return;
-    }
+  // private filterTracks(searchTerm: string) {
+  //   if (!searchTerm.trim()) {
+  //     this.filteredTracks = this.allTracks;
+  //     return;
+  //   }
 
-    searchTerm = searchTerm.toLowerCase();
-    this.filteredTracks = this.allTracks.filter(track =>
-      track.songName.toLowerCase().includes(searchTerm) ||
-      track.singerName.toLowerCase().includes(searchTerm)
-    );
+  //   searchTerm = searchTerm.toLowerCase();
+  //   this.filteredTracks = this.allTracks.filter(track =>
+  //     track.songName.toLowerCase().includes(searchTerm) ||
+  //     track.singerName.toLowerCase().includes(searchTerm)
+  //   );
+  // }
+
+  private groupTracksByCategory(tracks: Track[]): void {
+    this.groupedTracks.clear();
+    tracks.forEach(track => {
+      if (!this.groupedTracks.has(track.category)) {
+        this.groupedTracks.set(track.category, []);
+      }
+      this.groupedTracks.get(track.category)!.push(track);
+    });
   }
 
 

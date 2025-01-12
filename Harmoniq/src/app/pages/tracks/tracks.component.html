@@ -1,11 +1,17 @@
 <main class="bg-base-100 p-4">
   <div>
-    <div class="flex justify-between items-center mb-4">
+    <div class="flex justify-between items-center mb-8">
       <h1 class="text-xl font-bold text-primary">Made for you</h1>
     </div>
 
-    <section class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-      <app-track-card *ngFor="let track of filteredTracks" [track]="track"></app-track-card>
-    </section>
+    <ng-container *ngFor="let category of groupedTracks | keyvalue">
+      <h2 class="text-lg font-semibold text-blue-400 mt-6 mb-6">{{ category.key }}</h2>
+      <section class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+        <app-track-card
+          *ngFor="let track of category.value"
+          [track]="track"
+        ></app-track-card>
+      </section>
+    </ng-container>
   </div>
 </main>

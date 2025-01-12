@@ -3,9 +3,9 @@ import { HeroComponent } from '../../UI/hero/hero.component';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [HeroComponent],
+  imports: [HeroComponent], // Import the standalone HeroComponent here
   templateUrl: './home.component.html',
-  styleUrl: './home.component.scss'
+  styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
   private sky: HTMLElement | null = null;

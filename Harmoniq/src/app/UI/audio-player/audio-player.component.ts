@@ -6,7 +6,6 @@ import { Track } from '../../models/track.interface';
 import * as TrackSelectors from "../../state/tracks/tracks.selectors"
 import { CommonModule } from '@angular/common';
 // import { BlobToUrlPipe } from '../../pipes/safe-url.pipe';
-import { TrackPlayerService } from '../../service/track-player.service';
 import { PlayerService } from '../../service/player.service';
 @Component({
   selector: 'app-audio-player',
