@@ -3,9 +3,9 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { map, mergeMap, catchError, tap, withLatestFrom, switchMap } from 'rxjs/operators';
 import * as TrackActions from "./tracks.actions"
-import { TrackService } from '../../service/track.service';
+import { TrackService } from '../../service/track/track.service';
 import { Store } from '@ngrx/store';
-import { AlertService } from '../../service/alert.service';
+import { AlertService } from '../../service/alert/alert.service';
 import * as TrackSelectors from './tracks.selectors';
 import { AppState } from '../store/app.state';
 import { ActivatedRoute } from '@angular/router';

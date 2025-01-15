@@ -5,8 +5,8 @@ import { provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { TrackEffects } from './state/tracks/tracks.effects';
 import { trackReducer } from './state/tracks/tracks.reducer';
-import { IndexedDBService } from './service/indexed-db.service';
-import { PlayerService } from './service/player.service';
+import { IndexedDBService } from './service/indexdb/indexed-db.service';
+import { PlayerService } from './service/player/player.service';
 
 
 

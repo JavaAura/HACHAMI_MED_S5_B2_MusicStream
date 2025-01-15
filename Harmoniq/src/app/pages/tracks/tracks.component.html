@@ -4,14 +4,18 @@
       <h1 class="text-xl font-bold text-primary">Made for you</h1>
     </div>
 
-    <ng-container *ngFor="let category of groupedTracks | keyvalue">
-      <h2 class="text-lg font-semibold text-blue-400 mt-6 mb-6">{{ category.key }}</h2>
-      <section class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-        <app-track-card
-          *ngFor="let track of category.value"
-          [track]="track"
-        ></app-track-card>
-      </section>
-    </ng-container>
+    @if (groupedTracks.size === 0) {
+      <p class="text-center text-gray-500">No tracks found matching your search.</p>
+    } @else {
+      @for (category of groupedTracks | keyvalue; track category) {
+        <h2 class="text-lg font-semibold text-blue-400 mt-6 mb-6">{{ category.key }}</h2>
+        <section class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+          @for (track of category.value; track track) {
+            <app-track-card [track]="track"></app-track-card>
+          }
+        </section>
+      }
+    }
   </div>
 </main>
+

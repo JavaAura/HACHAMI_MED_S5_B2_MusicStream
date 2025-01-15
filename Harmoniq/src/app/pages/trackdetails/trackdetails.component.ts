@@ -5,10 +5,11 @@ import { Store } from '@ngrx/store';
 import { combineLatest, filter, Observable, Subscription } from 'rxjs';
 import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
 import { Track, CategoryType } from '../../models/track.interface';
-import { PlayerService } from '../../service/player.service';
-import { TrackService } from '../../service/track.service';
+import { PlayerService } from '../../service/player/player.service';
+import { TrackService } from '../../service/track/track.service';
 import * as TrackSelectors from '../../state/tracks/tracks.selectors';
 import * as TrackActions from '../../state/tracks/tracks.actions';
+import { AlertService } from '../../service/alert/alert.service';
 
 interface Album {
   title: string;
@@ -45,7 +46,9 @@ export class TrackDetailsComponent implements OnInit, OnDestroy {
     private router: Router,
     private trackPlayerService: PlayerService,
     private trackService: TrackService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private alertService: AlertService,
+
   ) {
     this.track$ = this.store.select(TrackSelectors.selectCurrentTrack);
     this.loading$ = this.store.select(TrackSelectors.selectIsLoading);
@@ -106,6 +109,18 @@ export class TrackDetailsComponent implements OnInit, OnDestroy {
 
   formatCategory(category: CategoryType): string {
     return category.charAt(0).toUpperCase() + category.slice(1).toLowerCase();
+  }
+
+  async onDelete(track: Track) {
+    const confirmed = await this.alertService.confirm(
+      'Delete Track',
+      `Are you sure you want to delete "${track.songName}"?`
+    );
+
+    if (confirmed) {
+      this.store.dispatch(TrackActions.deleteTrack({ id: track.id }));
+      this.router.navigate(['/tracks']);
+    }
   }
 }
 

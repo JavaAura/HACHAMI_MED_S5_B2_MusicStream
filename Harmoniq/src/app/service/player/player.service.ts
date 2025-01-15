@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Track } from '../models/track.interface';
-import { IndexedDBService } from './indexed-db.service';
-import * as TrackActions from '../state/tracks/tracks.actions';
+import { Track } from '../../models/track.interface';
+import { IndexedDBService } from '../indexdb/indexed-db.service';
+import * as TrackActions from '../../state/tracks/tracks.actions';
 import { Store } from '@ngrx/store';
 
 interface Progress {

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { TrackService } from '../../service/track.service';
+import { TrackService } from '../../service/track/track.service';
 import { Store } from '@ngrx/store';
 import * as TracksActions from '../../state/tracks/tracks.actions';
 import { Actions, ofType } from '@ngrx/effects';
@@ -128,7 +128,7 @@ export class NewTrackModalComponent implements OnInit {
     return null;
   }
 
-  async onSubmit(): Promise<void> {
+  async onSubmit(modal: HTMLDialogElement): Promise<void> {
     if (this.trackForm.valid && this.audioFileValidated) {
       try {
         const formData = this.trackForm.value;
@@ -148,6 +148,8 @@ export class NewTrackModalComponent implements OnInit {
         // Log the track data
         console.log("track", trackData);
 
+        modal.close();
+
         // Dispatch the action
         this.store.dispatch(TracksActions.createTrack({
           track: trackData,
@@ -155,7 +157,7 @@ export class NewTrackModalComponent implements OnInit {
           imageFile: formData.imageFile     // Pass imageFile (optional)
         }));
 
-      
+
 
       } catch (error) {
         console.error('Error submitting track:', error);

@@ -1,6 +1,6 @@
-<!--  -->
+<app-new-track-modal id="new_track_modal"></app-new-track-modal>
 <div class="flex items-center justify-between h-16 bg-base-100 border-b border-gray-200">
-  <div class="navbar-start w-1/4 ">
+  <div class="navbar-start w-1/4">
     <div class="dropdown">
       <div tabindex="0" role="button" class="btn btn-ghost btn-circle">
         <svg
@@ -19,14 +19,12 @@
       <ul
         tabindex="0"
         class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
-        <li><a onclick="new_track_modal.showModal()">New Track</a></li>
-        <li><a>My Playlists</a></li>
-        <li><a>About</a></li>
+        <li><a (click)="openNewTrackModal()">New Track</a></li>
+        <li><a routerLink="/tracks">Tracks</a></li>
       </ul>
     </div>
   </div>
 
-  <!-- Updated center logo positioning -->
   <div class="flex-1 flex justify-center" style="width: 100px;">
     <img
       src="./assets/images/logo.png"
@@ -35,24 +33,32 @@
     >
   </div>
 
-  <!-- Updated end items positioning -->
-  <div class="navbar-end flex items-center gap-2 w-1/3" >
-    <!-- Search button -->
-    <button class="btn btn-ghost btn-circle">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-5 w-5"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor">
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-      </svg>
-    </button>
-    <!-- Notification button -->
+  <div class="navbar-end flex items-center gap-2 w-1/3">
+    <div class="relative">
+      <button class="btn btn-ghost btn-circle" (click)="toggleSearch()">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      </button>
+      @if (isSearchVisible) {
+        <input
+          type="search"
+          class="absolute right-0 top-full mt-2 w-64 input input-bordered"
+          [(ngModel)]="searchTerm"
+          (input)="onSearch()"
+          placeholder="Search tracks..."
+        >
+      }
+    </div>
     <button class="btn btn-ghost btn-circle">
       <div class="indicator">
         <svg
@@ -70,8 +76,7 @@
         <span class="badge badge-xs badge-primary indicator-item"></span>
       </div>
     </button>
-    <!-- Theme toggle button -->
-    <button onclick="ThemeManager.toggleTheme()" class="btn btn-ghost btn-circle">
+    <button (click)="toggleTheme()" class="btn btn-ghost btn-circle">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         class="h-5 w-5"
@@ -88,5 +93,3 @@
   </div>
 </div>
 
-
-<app-new-track-modal></app-new-track-modal>

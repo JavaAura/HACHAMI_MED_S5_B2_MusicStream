@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, from, mergeMap, map } from 'rxjs';
-import {CategoryType, Track} from '../models/track.interface'
-import { IndexedDBService } from './indexed-db.service';
+import {CategoryType, Track} from '../../models/track.interface'
+import { IndexedDBService } from '../indexdb/indexed-db.service';
 
 
 @Injectable({

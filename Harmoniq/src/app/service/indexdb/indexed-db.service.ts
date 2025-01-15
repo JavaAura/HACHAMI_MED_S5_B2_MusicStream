@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Track } from '../models/track.interface';
-import { AudioBlob } from '../models/audio-blob.model';
-import { ImageBlob } from '../models/image-blob.interface';
+import { Track } from '../../models/track.interface';
+import { AudioBlob } from '../../models/audio-blob.model';
+import { ImageBlob } from '../../models/image-blob.interface';
 
 @Injectable({
   providedIn: 'root'
